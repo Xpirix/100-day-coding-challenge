@@ -1,0 +1,35 @@
+# Django
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+db.sqlite3
+*.log
+*.pot
+*.mo
+*.swp
+*.swo
+*.DS_Store
+*.coverage
+.coverage.*
+*.mypy_cache/
+*.pytest_cache/
+*.env
+.env
+.env.*
+venv
+
+# React
+node_modules/
+build/
+dist/
+*.log
+*.lock
+*.cache
+*.tmp
+*.swp
+*.swo
+*.DS_Store
+.env
+.env.*
