@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from workouts.views import WorkoutList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/workouts/', WorkoutList.as_view(), name='workouts-list'),
 ]
