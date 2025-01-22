@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework', # Add rest_framework to the list of installed apps
-    'workouts'
+    'workouts',
+    'corsheaders', # Add corsheaders to the list of installed apps
 ]
 
 MIDDLEWARE = [
@@ -49,7 +50,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # Add CorsMiddleware to the list of middleware
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True # Allow all origins to access the API
 
 ROOT_URLCONF = 'fitness_backend.urls'
 
