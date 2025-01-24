@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../api/axios";
+import AddWorkoutForm from "./AddWorkoutForm";
 
 const WorkoutList = () => {
   const [workouts, setWorkouts] = useState([]);
@@ -18,10 +19,15 @@ const WorkoutList = () => {
     fetchWorkouts();
   }, []);
 
+  const handleWorkoutAdded = (newWorkout) => {
+    setWorkouts((prevWorkouts) => [...prevWorkouts, newWorkout]);
+  };
+
   return (
     <div>
       <h1>Workouts</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
+      <AddWorkoutForm onWorkoutAdded={handleWorkoutAdded} />
       <ul>
         {workouts.map((workout) => (
           <li key={workout.id}>
