@@ -24,14 +24,18 @@ const WorkoutList = () => {
   };
 
   return (
-    <div>
-      <h1>Workouts</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="container mx-auto mt-8">
+      <h1 className="text-3xl font-bold text-center mb-8">Workouts</h1>
+      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       <AddWorkoutForm onWorkoutAdded={handleWorkoutAdded} />
-      <ul>
+      <ul className="bg-white shadow-md rounded-lg p-6">
         {workouts.map((workout) => (
-          <li key={workout.id}>
-            <strong>{workout.name}</strong> - {workout.duration} minutes
+          <li
+            key={workout.id}
+            className="flex justify-between items-center border-b last:border-none py-4"
+          >
+            <span className="font-bold">{workout.name}</span>
+            <span>{workout.duration} minutes</span>
           </li>
         ))}
       </ul>
