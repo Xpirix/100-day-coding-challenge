@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "../api/axios";
 import AddWorkoutForm from "./AddWorkoutForm";
+import EditWorkoutForm from "./EditWorkoutForm";
 
 const WorkoutList = () => {
   const [workouts, setWorkouts] = useState([]);
+  const [editingWorkout, setEditingWorkout] = useState(null); // Track the workout being edited
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -23,6 +25,33 @@ const WorkoutList = () => {
     setWorkouts((prevWorkouts) => [...prevWorkouts, newWorkout]);
   };
 
+  const handleEdit = (workout) => {
+    if (editingWorkout && editingWorkout.id === workout.id) {
+      setEditingWorkout(null); // Exit edit mode if the same workout is clicked again
+    } else {
+      setEditingWorkout(workout); // Set the workout to be edited
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/workouts/${id}/`);
+      setWorkouts((prevWorkouts) =>
+        prevWorkouts.filter((workout) => workout.id !== id)
+      );
+    } catch (err) {
+      setError("Failed to delete workout. Please try again later.");
+    }
+  };
+  const handleUpdate = (updatedWorkout) => {
+    setWorkouts((prevWorkouts) =>
+      prevWorkouts.map((workout) =>
+        workout.id === updatedWorkout.id ? updatedWorkout : workout
+      )
+    );
+    setEditingWorkout(null); // Exit edit mode
+  };
+
   return (
     <div className="container mx-auto mt-8">
       <h1 className="text-3xl font-bold text-center mb-8">Workouts</h1>
@@ -32,10 +61,34 @@ const WorkoutList = () => {
         {workouts.map((workout) => (
           <li
             key={workout.id}
-            className="flex justify-between items-center border-b last:border-none py-4"
+            className="border-b last:border-none py-4"
           >
-            <span className="font-bold">{workout.name}</span>
-            <span>{workout.duration} minutes</span>
+            <div className="flex justify-between items-center">
+              <div>
+                <span className="font-bold">{workout.name}: </span>
+                <span>{workout.duration} minutes</span>
+              </div>
+              <div>
+                <button
+                  onClick={() => handleEdit(workout)}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded mr-2"
+                >
+                  {editingWorkout && editingWorkout.id === workout.id ? "Cancel" : "Edit"}
+                </button>
+                <button
+                  onClick={() => handleDelete(workout.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+            {editingWorkout && editingWorkout.id === workout.id && (
+              <EditWorkoutForm
+                workout={editingWorkout}
+                onWorkoutUpdated={handleUpdate}
+              />
+            )}
           </li>
         ))}
       </ul>
