@@ -5,21 +5,28 @@ import EditWorkoutForm from "./EditWorkoutForm";
 
 const WorkoutList = () => {
   const [workouts, setWorkouts] = useState([]);
-  const [editingWorkout, setEditingWorkout] = useState(null); // Track the workout being edited
+  const [editingWorkout, setEditingWorkout] = useState(null); // Track the workout being edited;
+  const [filter, setFilter] = useState(""); // Filter workouts by name
+  const [sortOption, setSortOption] = useState("name"); // Sort workouts by name or duration
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const response = await axios.get("/workouts/");
-        setWorkouts(response.data);
+        const response = await axios.get(`/workouts/`, {
+          params: {
+            search: filter, // Filter by name
+            ordering: sortOption, // Sort by name or duration
+          },
+        });
+        setWorkouts(response.data.results); // Adjust for paginated results
       } catch (err) {
         setError("Could not fetch workouts. Please try again later.");
       }
     };
 
     fetchWorkouts();
-  }, []);
+  }, [filter, sortOption]); // Re-fetch data when filter or sort changes
 
   const handleWorkoutAdded = (newWorkout) => {
     setWorkouts((prevWorkouts) => [...prevWorkouts, newWorkout]);
@@ -57,12 +64,27 @@ const WorkoutList = () => {
       <h1 className="text-3xl font-bold text-center mb-8">Workouts</h1>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       <AddWorkoutForm onWorkoutAdded={handleWorkoutAdded} />
+      {/* Filter and Sort Controls */}
+      <div className="flex justify-between items-center mb-4">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="shadow appearance-none border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+        />
+        <select
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+          className="shadow border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+        >
+          <option value="name">Sort by Name</option>
+          <option value="duration">Sort by Duration</option>
+        </select>
+      </div>
       <ul className="bg-white shadow-md rounded-lg p-6">
         {workouts.map((workout) => (
-          <li
-            key={workout.id}
-            className="border-b last:border-none py-4"
-          >
+          <li key={workout.id} className="border-b last:border-none py-4">
             <div className="flex justify-between items-center">
               <div>
                 <span className="font-bold">{workout.name}: </span>
@@ -73,7 +95,9 @@ const WorkoutList = () => {
                   onClick={() => handleEdit(workout)}
                   className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded mr-2"
                 >
-                  {editingWorkout && editingWorkout.id === workout.id ? "Cancel" : "Edit"}
+                  {editingWorkout && editingWorkout.id === workout.id
+                    ? "Cancel"
+                    : "Edit"}
                 </button>
                 <button
                   onClick={() => handleDelete(workout.id)}

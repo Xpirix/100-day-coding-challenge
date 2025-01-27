@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework', # Add rest_framework to the list of installed apps
     'workouts',
     'corsheaders', # Add corsheaders to the list of installed apps
+    'django_filters', # Add django_filters to the list of installed apps
 ]
 
 MIDDLEWARE = [
