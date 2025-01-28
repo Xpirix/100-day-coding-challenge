@@ -3,17 +3,17 @@ import axios from "../api/axios";
 import AddWorkoutForm from "./AddWorkoutForm";
 import EditWorkoutForm from "./EditWorkoutForm";
 
-const WorkoutList = () => {
-  const [workouts, setWorkouts] = useState([]);
-  const [editingWorkout, setEditingWorkout] = useState(null); // Track the workout being edited;
-  const [filter, setFilter] = useState(""); // Filter workouts by name
-  const [sortOption, setSortOption] = useState("name"); // Sort workouts by name or duration
-  const [error, setError] = useState("");
+const WorkoutList: React.FC = () => {
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [editingWorkout, setEditingWorkout] = useState<Workout | null>(null);
+  const [filter, setFilter] = useState<string>(""); // Filter workouts by name
+  const [sortOption, setSortOption] = useState<string>("name"); // Sort workouts by name or duration
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const response = await axios.get(`/workouts/`, {
+        const response = await axios.get<PaginatedWorkouts>(`/workouts/`, {
           params: {
             search: filter, // Filter by name
             ordering: sortOption, // Sort by name or duration
@@ -28,11 +28,11 @@ const WorkoutList = () => {
     fetchWorkouts();
   }, [filter, sortOption]); // Re-fetch data when filter or sort changes
 
-  const handleWorkoutAdded = (newWorkout) => {
+  const handleWorkoutAdded = (newWorkout: Workout) => {
     setWorkouts((prevWorkouts) => [...prevWorkouts, newWorkout]);
   };
 
-  const handleEdit = (workout) => {
+  const handleEdit = (workout: Workout) => {
     if (editingWorkout && editingWorkout.id === workout.id) {
       setEditingWorkout(null); // Exit edit mode if the same workout is clicked again
     } else {
@@ -40,7 +40,7 @@ const WorkoutList = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number) => {
     try {
       await axios.delete(`/workouts/${id}/`);
       setWorkouts((prevWorkouts) =>
@@ -50,7 +50,7 @@ const WorkoutList = () => {
       setError("Failed to delete workout. Please try again later.");
     }
   };
-  const handleUpdate = (updatedWorkout) => {
+  const handleUpdate = (updatedWorkout: Workout) => {
     setWorkouts((prevWorkouts) =>
       prevWorkouts.map((workout) =>
         workout.id === updatedWorkout.id ? updatedWorkout : workout

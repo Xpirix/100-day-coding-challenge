@@ -1,23 +1,27 @@
 import React, { useState } from "react";
 import axios from "../api/axios";
 
-const AddWorkoutForm = ({ onWorkoutAdded }) => {
-  const [name, setName] = useState("");
-  const [duration, setDuration] = useState("");
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+interface AddWorkoutFormProps {
+  onWorkoutAdded: (workout: Workout) => void;
+}
+
+const AddWorkoutForm: React.FC<AddWorkoutFormProps> = ({ onWorkoutAdded }) => {
+  const [name, setName] = useState<string>("");
+  const [duration, setDuration] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
 
   const validateForm = () => {
     if (!name) return "Workout name is required.";
     if (!duration) return "Workout duration is required.";
-    if (isNaN(duration) || parseInt(duration) <= 0)
+    if (isNaN(Number(duration)) || parseInt(duration) <= 0)
       return "Duration must be a positive number.";
     return "";
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    const validationError = validateForm();
+    const validationError: string = validateForm();
     if (validationError) {
       setError(validationError);
       setSuccessMessage("");
@@ -25,7 +29,7 @@ const AddWorkoutForm = ({ onWorkoutAdded }) => {
     }
 
     try {
-      const response = await axios.post("/workouts/", {
+      const response = await axios.post<Workout>("/workouts/", {
         name,
         duration: parseInt(duration),
       });

@@ -1,25 +1,30 @@
 import React, { useState } from "react";
 import axios from "../api/axios";
 
-const EditWorkoutForm = ({ workout, onWorkoutUpdated }) => {
-  const [name, setName] = useState(workout.name);
-  const [duration, setDuration] = useState(workout.duration);
-  const [error, setError] = useState("");
+interface EditWorkoutFormProps {
+  workout: Workout;
+  onWorkoutUpdated: (updatedWorkout: Workout) => void;
+}
 
-  const handleSubmit = async (e) => {
+const EditWorkoutForm: React.FC<EditWorkoutFormProps> = ({ workout, onWorkoutUpdated }) => {
+  const [name, setName] = useState<string>(workout.name);
+  const [duration, setDuration] = useState<number>(workout.duration);
+  const [error, setError] = useState<string>("");
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     if (!name || !duration) {
       setError("All fields are required.");
       return;
     }
-    if (isNaN(duration) || parseInt(duration) <= 0) {
+    if (isNaN(duration) || parseInt(duration.toString()) <= 0) {
       setError("Duration must be a positive number.");
       return;
     }
     try {
-      const response = await axios.put(`/workouts/${workout.id}/`, {
+      const response = await axios.put<Workout>(`/workouts/${workout.id}/`, {
         name,
-        duration: parseInt(duration),
+        duration: parseInt(duration.toString()),
       });
       onWorkoutUpdated(response.data);
     } catch (err) {
@@ -49,7 +54,7 @@ const EditWorkoutForm = ({ workout, onWorkoutUpdated }) => {
         <input
           type="number"
           value={duration}
-          onChange={(e) => setDuration(e.target.value)}
+          onChange={(e) => setDuration(Number(e.target.value))}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
       </div>
