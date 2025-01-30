@@ -1,4 +1,5 @@
 import axios from "../api/axios";
+import { User } from "../types/User";
 
 interface AuthResponse {
   access: string;
@@ -14,7 +15,7 @@ export const loginUser = async (username: string, password: string) => {
 };
 
 export const getCurrentUser = async (token: string) => {
-  return axios.get("/auth/users/me/", {
+  return axios.get<User>("/auth/users/me/", {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
