@@ -6,20 +6,23 @@ interface AuthResponse {
   refresh: string;
 }
 
-export const registerUser = async (username: string, password: string) => {
-  return axios.post("/auth/users/", { username, password });
+const API_URL = "http://localhost:8000/auth";
+
+
+export const loginUser = (username: string, password: string) => {
+  return axios.post<AuthResponse>(`${API_URL}/jwt/create/`, { username, password });
 };
 
-export const loginUser = async (username: string, password: string) => {
-  return axios.post<AuthResponse>("/auth/jwt/create/", { username, password });
+export const registerUser = (username: string, email: string, password: string) => {
+  return axios.post<AuthResponse>(`${API_URL}/users/`, { username, email, password });
 };
 
-export const getCurrentUser = async (token: string) => {
-  return axios.get<User>("/auth/users/me/", {
+export const getCurrentUser = (token: string) => {
+  return axios.get<User>(`${API_URL}/users/me/`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
 
-export const logoutUser = async (refreshToken: string) => {
-  return axios.post("/auth/jwt/blacklist/", { refresh: refreshToken });
+export const logoutUser = (refreshToken: string) => {
+  return axios.post(`${API_URL}/jwt/logout/`, { refresh: refreshToken });
 };

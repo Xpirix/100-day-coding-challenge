@@ -19,8 +19,8 @@ from django.urls import path, include
 from workouts.views import WorkoutList, WorkoutDetail
 
 urlpatterns = [
-    path("api/auth/", include("djoser.urls")),
-    path("api/auth/", include("djoser.urls.jwt")),
+    path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls.jwt")),
     path('admin/', admin.site.urls),
     path('api/workouts/', WorkoutList.as_view(), name='workouts-list'),
     path('api/workouts/<int:pk>/', WorkoutDetail.as_view(), name='workouts-detail'),

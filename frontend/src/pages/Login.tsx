@@ -10,11 +10,13 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(""); // Reset error before new login attempt
+  
     try {
       const response = await loginUser(username, password);
       authContext?.login(response.data.access);
-    } catch (err) {
-      setError("Invalid credentials. Please try again.");
+    } catch (err: any) {
+      setError("Invalid username or password. Please try again.");
     }
   };
 
