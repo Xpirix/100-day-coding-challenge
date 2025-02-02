@@ -36,9 +36,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = (token: string) => {
     localStorage.setItem("accessToken", token);
     setIsAuthenticated(true);
-    navigate("/dashboard");
+    navigate("/dashboard", { replace: true });
   };
-
+  
   const logout = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
     if (refreshToken) {
@@ -48,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem("refreshToken");
     setUser(null);
     setIsAuthenticated(false);
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (

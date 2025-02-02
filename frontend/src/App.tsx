@@ -6,14 +6,15 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import WorkoutList from "./components/WorkoutList";
+import PublicRoute from "./components/PublicRoute";
 
 const App: React.FC = () => {
   return (
     <Router>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={< PublicRoute component={Register} />} />
+          <Route path="/login" element={<PublicRoute component={Login} />} />
           <Route
             path="/dashboard"
             element={<ProtectedRoute component={Dashboard} />}
