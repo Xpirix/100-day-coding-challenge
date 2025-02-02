@@ -8,11 +8,32 @@ interface AuthResponse {
 
 const API_URL = "http://localhost:8000/auth";
 
-export const loginUser = (username: string, password: string) => {
-  return axios.post<AuthResponse>(`${API_URL}/jwt/create/`, {
-    username,
-    password,
-  });
+export const loginUser = async (username: string, password: string) => {
+  const response = await axios.post<AuthResponse>(`${API_URL}/jwt/create/`, { username, password });
+  if (response.data.access) {
+    localStorage.setItem("access_token", response.data.access);
+    localStorage.setItem("refresh_token", response.data.refresh);
+  }
+  return response;
+};
+
+export const refreshToken = async () => {
+  const refresh = localStorage.getItem("refresh_token");
+  if (!refresh) return;
+
+  try {
+    const response = await axios.post<AuthResponse>(`${API_URL}/jwt/refresh/`, { refresh });
+    localStorage.setItem("access_token", response.data.access);
+    return response.data.access;
+  } catch {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+  }
+};
+
+export const logoutUser = () => {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
 };
 
 export const registerUser = (
@@ -33,9 +54,6 @@ export const getCurrentUser = (token: string) => {
   });
 };
 
-export const logoutUser = (refreshToken: string) => {
-  return axios.post(`${API_URL}/jwt/logout/`, { refresh: refreshToken });
-};
 
 export const requestPasswordReset = (email: string) => {
   return axios.post(`${API_URL}/users/reset_password/`, { email });

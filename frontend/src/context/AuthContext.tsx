@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { getCurrentUser, logoutUser } from "../api/auth";
+import { getCurrentUser, logoutUser, refreshToken } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import { User } from "../types/User";
 
@@ -14,15 +14,15 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("accessToken"));
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("access_token"));
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const token = localStorage.getItem("accessToken");
-      if (token) {
+      const newAccessToken = await refreshToken();
+      if (newAccessToken) {
         try {
-          const response = await getCurrentUser(token);
+          const response = await getCurrentUser(newAccessToken);
           setUser(response.data);
         } catch (error) {
           console.error("Failed to fetch user:", error);
@@ -31,21 +31,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
     fetchUser();
+    const interval = setInterval(fetchUser, 5 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const login = (token: string) => {
-    localStorage.setItem("accessToken", token);
+    localStorage.setItem("access_token", token);
     setIsAuthenticated(true);
     navigate("/dashboard", { replace: true });
   };
   
   const logout = async () => {
-    const refreshToken = localStorage.getItem("refreshToken");
+    const refreshToken = localStorage.getItem("refresh_token");
     if (refreshToken) {
-      await logoutUser(refreshToken);
+      await logoutUser();
     }
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     setUser(null);
     setIsAuthenticated(false);
     navigate("/login", { replace: true });
