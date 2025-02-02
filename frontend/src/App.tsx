@@ -5,8 +5,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import ActivateAccount from "./pages/ActivateAccount";
 import WorkoutList from "./components/WorkoutList";
 import PublicRoute from "./components/PublicRoute";
+import RequestPasswordReset from "./pages/RequestPasswordReset";
 
 const App: React.FC = () => {
   return (
@@ -15,6 +17,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={< PublicRoute component={Register} />} />
           <Route path="/login" element={<PublicRoute component={Login} />} />
+          <Route path="/activate/:uid/:token" element={<PublicRoute component={ActivateAccount} />} />
+          <Route path="/password-reset" element={<PublicRoute component={RequestPasswordReset} />} />
           <Route
             path="/dashboard"
             element={<ProtectedRoute component={Dashboard} />}
