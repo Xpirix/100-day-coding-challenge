@@ -70,3 +70,23 @@ export const resetPasswordConfirm = (
     new_password,
   });
 };
+
+export const updateUserProfile = async (username: string, password: string) => {
+  try {
+    const token = localStorage.getItem("access_token");
+    const response = await axios.put(
+      `${API_URL}/users/me/`,
+      { username, password },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (response.status === 200) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Profile update failed", error);
+    return false;
+  }
+};

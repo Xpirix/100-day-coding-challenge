@@ -9,6 +9,7 @@ import ActivateAccount from "./pages/ActivateAccount";
 import WorkoutList from "./components/WorkoutList";
 import PublicRoute from "./components/PublicRoute";
 import RequestPasswordReset from "./pages/RequestPasswordReset";
+import Profile from "./pages/Profile";
 
 const App: React.FC = () => {
   return (
@@ -26,6 +27,10 @@ const App: React.FC = () => {
           <Route
             path="/workouts"
             element={<ProtectedRoute component={WorkoutList} />}
+          />
+          <Route
+            path="/profile"
+            element={<ProtectedRoute component={Profile} />}
           />
 
         </Routes>
