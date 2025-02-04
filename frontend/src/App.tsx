@@ -15,12 +15,12 @@ const App: React.FC = () => {
     <Router>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={< PublicRoute component={Register} />} />
+          <Route path="/register" element={< PublicRoute component={Register} />} />
           <Route path="/login" element={<PublicRoute component={Login} />} />
           <Route path="/activate/:uid/:token" element={<PublicRoute component={ActivateAccount} />} />
           <Route path="/password-reset" element={<PublicRoute component={RequestPasswordReset} />} />
           <Route
-            path="/dashboard"
+            path="/"
             element={<ProtectedRoute component={Dashboard} />}
           />
           <Route

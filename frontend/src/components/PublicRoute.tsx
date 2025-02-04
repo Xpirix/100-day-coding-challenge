@@ -10,7 +10,7 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ component: Component }) => {
   const authContext = useContext(AuthContext);
 
   if (authContext?.isAuthenticated) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/" />;
   }
 
   return <Component />;
