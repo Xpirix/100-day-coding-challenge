@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken', # Add rest_framework.authtoken to the list of installed apps
     'djoser', # Add djoser to the list of installed apps
     'workouts',
+    'users',
     'corsheaders', # Add corsheaders to the list of installed apps
     'django_filters', # Add django_filters to the list of installed apps
 ]
